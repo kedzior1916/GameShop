@@ -1,11 +1,11 @@
-#Game Shop
+# Game Shop
 Uproszczony system zarządzania sklepem z grami w ramach projektu na zaliczenie przedmiotu "Platformy programowania".
 
-##Funkcje
+## Funkcje
 
 [tutaj funkcje]
 
-##Pozostałe informacje
+## Pozostałe informacje
 
 [tutaj pozostałe]
 
