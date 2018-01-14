@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="shared/header :: header-css"/>
+    <title>Strona domowa</title>
+</head>
+<body>
+<div th:replace="shared/header :: header('game')"/>
+<div id="main" class="container">
+    <span style="font-size: 30pt">
+        Profil gry
+    </span>
+</div>
+<div th:replace="shared/footer :: footer"/>
+</body>
+</html>
