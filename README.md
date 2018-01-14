@@ -5,6 +5,12 @@ Uproszczony system zarządzania sklepem z grami w ramach projektu na zaliczenie 
 
 [tutaj funkcje]
 
+## Technologie
+
+* JDK 1.8
+* Spring Boot
+* Bootstrap + Thymeleaf
+
 ## Pozostałe informacje
 
 [tutaj pozostałe]
