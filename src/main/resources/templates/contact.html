@@ -10,6 +10,19 @@
     <span style="font-size: 30pt">
         Skontaktuj się z nami
     </span>
+    <form th:method="POST" th:action="@{/contact}">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="description">Treść</label>
+            <input type="text" id="description" name="description" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Zaloguj</button>
+        </div>
+    </form>
 </div>
 <div th:replace="shared/footer :: footer"/>
 </body>

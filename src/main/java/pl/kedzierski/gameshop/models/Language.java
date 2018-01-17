@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name="categories")
+@Table(name="languages")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+@NoArgsConstructor
+public class Language {
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     private String name;
-
 }

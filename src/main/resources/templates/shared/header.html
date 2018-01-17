@@ -37,8 +37,12 @@
                             </div>
                         </form>
                     </li>
-                    <li><a>Koszyk</a></li>
-                    <li><a th:href="@{/login}">Loguj</a></li>
+                    <li sec:authorize="isAuthenticated()">
+                        <a>Koszyk</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated()">
+                        <a th:href="@{/login}">Loguj</a>
+                    </li>
                 </ul>
             </div>
         </div>

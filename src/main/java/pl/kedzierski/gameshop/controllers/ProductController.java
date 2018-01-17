@@ -1,29 +1,98 @@
 package pl.kedzierski.gameshop.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import pl.kedzierski.gameshop.models.AvailabilityType;
-import pl.kedzierski.gameshop.models.Product;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+import pl.kedzierski.gameshop.models.*;
+import pl.kedzierski.gameshop.services.ProductService;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ProductController {
 
-    @RequestMapping(value = "/exampleProduct", method = RequestMethod.GET)
-    public String getExampleProduct(Model model){
-        Product p = new Product(1, "Initial D Special Stage", LocalDate.of(2003, Month.JUNE, 26),
-                new BigDecimal(29.99), new AvailabilityType(1, "Dostępne 24h", true), "Initial D Special Stage is also the first home-console Initial D game published by Sega.\n" +
-                "Initial D Special Stage contains a story mode that allows the player to reenact racing scenes from the Initial D manga series, " +
-                "as well as several new courses then not seen in the arcade versions of the game. " +
-                "Bunta's Challenge is noticeably absent in the game. Additional features including replays for saved time-attack records and Iketani's car introduction.", "Konsola Playstation 2");
-        model.addAttribute("product", p);
-        return "/product";
+    @Autowired
+    private ProductService productService;
+
+    public ProductController(ProductService productService)
+    {
+        this.productService = productService;
+    }
+
+    @RequestMapping(value="/productForm", method= RequestMethod.GET)
+    public String showForm(Model model, Optional<Long> id){
+        model.addAttribute("product",
+                id.isPresent()?
+                        productService.getProduct(id.get()):
+                        new Product());
+        return "productForm";
+    }
+
+    @RequestMapping(value="/productForm", method= RequestMethod.POST)
+    //@ResponseStatus(HttpStatus.CREATED)
+    public String processForm(@Valid @ModelAttribute("product") Product p, BindingResult errors){
+
+        if(errors.hasErrors()){
+            return "productForm";
+        }
+
+        productService.saveProduct(p);
+
+        return "redirect:home.html";//po udanym dodaniu/edycji przekierowujemy na listę
+    }
+
+    @ModelAttribute("availabilityTypes")
+    public List<AvailabilityType> loadTypes(){
+        List<AvailabilityType> types = productService.getAllAvailabilityTypes();
+        return types;
+    }
+
+    @ModelAttribute("platformList")
+    public List<Platform> loadPlatforms(){
+        List<Platform> platforms = productService.getAllPlatforms();
+        return platforms;
+    }
+    @ModelAttribute("categoryList")
+    public List<Category> loadCategories(){
+        List<Category> categories = productService.getAllCategories();
+        return categories;
+    }
+    @ModelAttribute("languageList")
+    public List<Language> loadLanguages(){
+        List<Language> languages = productService.getAllLanguages();
+        return languages;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {//Rejestrujemy edytory właściwości
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        CustomDateEditor dateEditor = new CustomDateEditor(dateFormat, false);
+        binder.registerCustomEditor(Date.class, "releaseDate", dateEditor);
+
+        DecimalFormat numberFormat = new DecimalFormat("#0.00");
+        numberFormat.setMaximumFractionDigits(2);
+        numberFormat.setMinimumFractionDigits(2);
+        numberFormat.setGroupingUsed(false);
+        binder.registerCustomEditor(Float.class, "price", new CustomNumberEditor(Float.class, numberFormat, false));
+
+        binder.setDisallowedFields("createdDate");//ze względu na bezpieczeństwo aplikacji to pole nie może zostać przesłane w formularzu
+
     }
 
 }
