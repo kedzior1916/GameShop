@@ -3,25 +3,44 @@ package pl.kedzierski.gameshop.init;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.kedzierski.gameshop.models.*;
 import pl.kedzierski.gameshop.repositories.*;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 @Configuration
 public class RepositoryMockupInitializer implements InitializingBean {
 
+
     private AvailabilityTypeRepository availabilityTypeRepository;
+
     private ProductRepository productRepository;
+
     private PlatformRepository platformRepository;
+
     private LanguageRepository languageRepository;
+
     private CategoryRepository categoryRepository;
 
+    private UserRepository userRepository;
+
+    private RoleRepository roleRepository;
+
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public RepositoryMockupInitializer(AvailabilityTypeRepository availabilityTypeRepository, ProductRepository productRepository, PlatformRepository platformRepository, LanguageRepository languageRepository, CategoryRepository categoryRepository) {
+    public RepositoryMockupInitializer(AvailabilityTypeRepository availabilityTypeRepository, ProductRepository productRepository, PlatformRepository platformRepository, LanguageRepository languageRepository, CategoryRepository categoryRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.availabilityTypeRepository = availabilityTypeRepository;
         this.productRepository = productRepository;
         this.platformRepository = platformRepository;
         this.languageRepository = languageRepository;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,6 +49,7 @@ public class RepositoryMockupInitializer implements InitializingBean {
         initCategoryRepository();
         initLanguageRepository();
         initPlatformRepository();
+        initRoleRepository();
     }
 
     public void initAvailabilityTypeRepository() {
@@ -98,6 +118,33 @@ public class RepositoryMockupInitializer implements InitializingBean {
 
             a3.setName("japonski");
             languageRepository.save(a3);
+        }
+    }
+
+    public void initRoleRepository(){
+        if(roleRepository.findAll().isEmpty() == true){
+            try {
+                Role roleUser = roleRepository.save(new Role(Role.Types.ROLE_USER));
+                Role roleAdmin = roleRepository.save(new Role(Role.Types.ROLE_ADMIN));
+
+                User user = new User("user", true);
+                user.setRoles(new HashSet<>(Arrays.asList(roleUser)));
+                user.setPassword(passwordEncoder.encode("user"));
+
+                User admin = new User("admin", true);
+                admin.setRoles(new HashSet<>(Arrays.asList(roleAdmin)));
+                admin.setPassword(passwordEncoder.encode("admin"));
+
+                User test = new User("test", true);
+                test.setRoles(new HashSet<>(Arrays.asList(roleAdmin, roleUser)));
+                test.setPassword(passwordEncoder.encode("test"));
+
+                userRepository.save(user);
+                userRepository.save(admin);
+                userRepository.save(test);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }

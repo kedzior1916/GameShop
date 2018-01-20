@@ -5,10 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.kedzierski.gameshop.controllers.commands.ProductFilter;
+import pl.kedzierski.gameshop.exceptions.ProductNotFoundException;
 import pl.kedzierski.gameshop.models.*;
 import pl.kedzierski.gameshop.repositories.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -45,21 +48,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProducts(Pageable pageable) {
+    public Page<Product> getAllProducts(ProductFilter search, Pageable pageable) {
         Page page;
-        page = productRepository.findAll(pageable);
+        if(search.isEmpty()){
+            page = productRepository.findAll(pageable);
+        }else{
+            page = productRepository.findAllProductsUsingFilter(search.getPhraseLIKE(), search.getMinPrice(), search.getMaxPrice(), pageable);
+        }
+
         return page;
     }
 
     @Transactional
     @Override
     public Product getProduct(Long id) {
-        return null;
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        Product product = optionalProduct.orElseThrow(()->new ProductNotFoundException(id));
+        product.getLanguages().size();
+        return product;
     }
 
     @Override
     public void deleteProduct(Long id) {
-        //productRepository.deleteByid(id);
+        productRepository.deleteById(id);
     }
 
     @Override

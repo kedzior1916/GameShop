@@ -23,15 +23,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@SessionAttributes(names={"platformList", "availabilityTypes", "categoryList", "languageList", "product"})
 public class ProductController {
 
     @Autowired
     private ProductService productService;
-
-    public ProductController(ProductService productService)
-    {
-        this.productService = productService;
-    }
 
     @RequestMapping(value="/productForm", method= RequestMethod.GET)
     public String showForm(Model model, Optional<Long> id){
@@ -52,7 +48,7 @@ public class ProductController {
 
         productService.saveProduct(p);
 
-        return "redirect:home.html";//po udanym dodaniu/edycji przekierowujemy na listę
+        return "redirect:products";//po udanym dodaniu/edycji przekierowujemy na listę
     }
 
     @ModelAttribute("availabilityTypes")
