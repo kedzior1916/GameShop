@@ -17,10 +17,8 @@
                 </div>
                 <div class="col-lg-7 col-md-7">
                     <div class="btn-group">
-                        <!-- TODO: platform page and list of platforms -->
                         <a class="btn btn-primary" th:href="@{/platform(id=${product.platform.id})}"
                            th:text="${product.platform.name}">Platforma</a>
-                        <!-- TODO: category page and list of categories -->
                         <a class="btn btn-primary" th:href="@{/category(id=${product.category.id})}"
                            th:text="${product.category.name}">Kategoria</a>
                         <a class="btn btn-primary" th:href="@{/products(id=${product.id})}"

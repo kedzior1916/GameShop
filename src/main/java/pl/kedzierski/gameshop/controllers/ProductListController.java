@@ -10,28 +10,42 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import pl.kedzierski.gameshop.controllers.commands.ProductFilter;
+import pl.kedzierski.gameshop.models.Category;
+import pl.kedzierski.gameshop.models.Platform;
 import pl.kedzierski.gameshop.models.Product;
 import pl.kedzierski.gameshop.services.ProductService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.text.DecimalFormat;
+import java.util.List;
 
 @Controller
-@SessionAttributes("searchCommand")
+@SessionAttributes(names={"searchCommand"})
 public class ProductListController {
 
     @Autowired
     private ProductService productService;
 
+    @ModelAttribute("platformList")
+    public List<Platform> loadPlatforms(){
+        List<Platform> platforms = productService.getAllPlatforms();
+        return platforms;
+    }
+    @ModelAttribute("categoryList")
+    public List<Category> loadCategories(){
+        List<Category> categories = productService.getAllCategories();
+        return categories;
+    }
+
     @RequestMapping(value="/products", params = "id", method = RequestMethod.GET)
-    public String showVehicleDetails(Model model, Long id){
+    public String showProductDetails(Model model, Long id){
         model.addAttribute("product", productService.getProduct(id));
         return "product";
     }
 
     @GetMapping(value="/error")
-    public String resetehicleList(){
+    public String resetProductList(){
         return "redirect:products";
     }
 
@@ -42,20 +56,21 @@ public class ProductListController {
     }
 
     @GetMapping(value="/products", params = {"all"})
-    public String resetehicleList(@ModelAttribute("searchCommand") ProductFilter search){
+    public String resetProductList(@ModelAttribute("searchCommand") ProductFilter search){
         search.clear();
         return "redirect:products";
     }
 
     @RequestMapping(value="/products", method = {RequestMethod.GET, RequestMethod.POST})
-    public String showVehicleList(Model model, @Valid @ModelAttribute("searchCommand") ProductFilter search, BindingResult result, Pageable pageable){
+    public String showVehicleList(Model model, @Valid @ModelAttribute("searchCommand") ProductFilter search,
+                                  BindingResult result, Pageable pageable){
         model.addAttribute("productListPage", productService.getAllProducts(search, pageable));
         return "productList";
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping(path="/products", params={"did"})
-    public String deleteVehicle(long did, HttpServletRequest request){
+    public String deleteProduct(long did, HttpServletRequest request){
         productService.deleteProduct(did);
         String queryString = prepareQueryString(request.getQueryString());
         return String.format("redirect:products%s", queryString);//robimy przekierowanie, ale zachowując parametry pageingu
@@ -63,7 +78,7 @@ public class ProductListController {
 
     private String prepareQueryString(String queryString) {//np., did=20&page=2&size=20
         if (queryString.contains("&")) {
-            return "?"+queryString.substring(queryString.indexOf("&") + 1);//obcinamy parametr did, bo inaczej po przekierowaniu znowu będzie wywołana metoda deleteVihicle
+            return "?"+queryString.substring(queryString.indexOf("&") + 1);//obcinamy parametr did, bo inaczej po przekierowaniu znowu będzie wywołana metoda delete
         }else{
             return "";
         }

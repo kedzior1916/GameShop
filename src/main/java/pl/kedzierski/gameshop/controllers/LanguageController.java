@@ -3,17 +3,16 @@ package pl.kedzierski.gameshop.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import pl.kedzierski.gameshop.controllers.commands.ProductFilter;
-import pl.kedzierski.gameshop.models.Category;
-import pl.kedzierski.gameshop.services.CategoryService;
-import pl.kedzierski.gameshop.services.ProductService;
+import pl.kedzierski.gameshop.models.AvailabilityType;
+import pl.kedzierski.gameshop.models.Language;
+import pl.kedzierski.gameshop.services.AvailabilityService;
+import pl.kedzierski.gameshop.services.LanguageService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -22,51 +21,44 @@ import java.util.Optional;
 
 @Controller
 @SessionAttributes("searchCommand")
-public class CategoryController {
+public class LanguageController {
 
     @Autowired
-    private CategoryService categoryService;
+    private LanguageService languageService;
 
-    @RequestMapping(value="/categoryForm", method= RequestMethod.GET)
+    @RequestMapping(value="/languageForm", method= RequestMethod.GET)
     public String showForm(Model model, Optional<Long> id){
-        model.addAttribute("category",
+        model.addAttribute("language",
                 id.isPresent()?
-                        categoryService.getCategory(id.get()):
-                        new Category());
-        return "categoryForm";
+                        languageService.getLanguage(id.get()):
+                        new Language());
+        return "languageForm";
     }
 
-    @RequestMapping(value="/categoryForm", method= RequestMethod.POST)
-    public String processForm(@Valid @ModelAttribute("category") Category p, BindingResult errors) {
+    @RequestMapping(value="/languageForm", method= RequestMethod.POST)
+    public String processForm(@Valid @ModelAttribute("language") Language language, BindingResult errors) {
 
         if(errors.hasErrors()){
-            return "categoryForm";
+            return "languageForm";
         }
 
-        categoryService.saveCategory(p);
+        languageService.saveLanguage(language);
 
-        return "redirect:categories";//po udanym dodaniu/edycji przekierowujemy na listę
+        return "redirect:languages";//po udanym dodaniu/edycji przekierowujemy na listę
     }
 
-
-    @RequestMapping(value="/category", params = "id", method = {RequestMethod.GET})
-    public String showProductinCategoryList(Model model, @Param("id") Long id, Pageable pageable){
-        model.addAttribute("productListPage", categoryService.getAllProductsbyCategory(id, pageable));
-        return "productList";
-    }
-
-    @RequestMapping(value="/categories", method = {RequestMethod.GET})
-    public String showCategories(Model model, Pageable pageable){
-        model.addAttribute("categoryListPage", categoryService.getAllCategories(pageable));
-        return "categoryList";
+    @RequestMapping(value="/languages", method = {RequestMethod.GET})
+    public String showLanguages(Model model, Pageable pageable){
+        model.addAttribute("languageListPage", languageService.getAllLanguages(pageable));
+        return "languageList";
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping(path="/categories", params={"did"})
-    public String deleteCategory(long did, HttpServletRequest request){
-        categoryService.deleteCategory(did);
+    @GetMapping(path="/languages", params={"did"})
+    public String deleteLanguage(long did, HttpServletRequest request){
+        languageService.deleteLanguage(did);
         String queryString = prepareQueryString(request.getQueryString());
-        return String.format("redirect:categories%s", queryString);//robimy przekierowanie, ale zachowując parametry pageingu
+        return String.format("redirect:languages%s", queryString);//robimy przekierowanie, ale zachowując parametry pageingu
     }
 
     private String prepareQueryString(String queryString) {//np., did=20&page=2&size=20
@@ -86,5 +78,6 @@ public class CategoryController {
         CustomNumberEditor priceEditor = new CustomNumberEditor(Float.class, numberFormat, true);
         binder.registerCustomEditor(Float.class, "minPrice", priceEditor);
         binder.registerCustomEditor(Float.class, "maxPrice", priceEditor);
+
     }
 }

@@ -3,6 +3,7 @@ package pl.kedzierski.gameshop.models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="platforms")
@@ -13,5 +14,6 @@ public class Platform {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String name;
 }

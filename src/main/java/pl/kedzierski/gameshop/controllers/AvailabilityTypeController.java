@@ -10,10 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import pl.kedzierski.gameshop.controllers.commands.ProductFilter;
-import pl.kedzierski.gameshop.models.Category;
-import pl.kedzierski.gameshop.services.CategoryService;
-import pl.kedzierski.gameshop.services.ProductService;
+import pl.kedzierski.gameshop.models.AvailabilityType;
+import pl.kedzierski.gameshop.models.Platform;
+import pl.kedzierski.gameshop.services.AvailabilityService;
+import pl.kedzierski.gameshop.services.PlatformService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -22,51 +22,44 @@ import java.util.Optional;
 
 @Controller
 @SessionAttributes("searchCommand")
-public class CategoryController {
+public class AvailabilityTypeController {
 
     @Autowired
-    private CategoryService categoryService;
+    private AvailabilityService availabilityService;
 
-    @RequestMapping(value="/categoryForm", method= RequestMethod.GET)
+    @RequestMapping(value="/availabilityForm", method= RequestMethod.GET)
     public String showForm(Model model, Optional<Long> id){
-        model.addAttribute("category",
+        model.addAttribute("availability",
                 id.isPresent()?
-                        categoryService.getCategory(id.get()):
-                        new Category());
-        return "categoryForm";
+                        availabilityService.getType(id.get()):
+                        new AvailabilityType());
+        return "availabilityForm";
     }
 
-    @RequestMapping(value="/categoryForm", method= RequestMethod.POST)
-    public String processForm(@Valid @ModelAttribute("category") Category p, BindingResult errors) {
+    @RequestMapping(value="/availabilityForm", method= RequestMethod.POST)
+    public String processForm(@Valid @ModelAttribute("availability") AvailabilityType type, BindingResult errors) {
 
         if(errors.hasErrors()){
-            return "categoryForm";
+            return "availabilityForm";
         }
 
-        categoryService.saveCategory(p);
+        availabilityService.saveType(type);
 
-        return "redirect:categories";//po udanym dodaniu/edycji przekierowujemy na listę
+        return "redirect:availability";//po udanym dodaniu/edycji przekierowujemy na listę
     }
 
-
-    @RequestMapping(value="/category", params = "id", method = {RequestMethod.GET})
-    public String showProductinCategoryList(Model model, @Param("id") Long id, Pageable pageable){
-        model.addAttribute("productListPage", categoryService.getAllProductsbyCategory(id, pageable));
-        return "productList";
-    }
-
-    @RequestMapping(value="/categories", method = {RequestMethod.GET})
-    public String showCategories(Model model, Pageable pageable){
-        model.addAttribute("categoryListPage", categoryService.getAllCategories(pageable));
-        return "categoryList";
+    @RequestMapping(value="/availability", method = {RequestMethod.GET})
+    public String showTypes(Model model, Pageable pageable){
+        model.addAttribute("availabilityListPage", availabilityService.getAllTypes(pageable));
+        return "availabilityList";
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping(path="/categories", params={"did"})
-    public String deleteCategory(long did, HttpServletRequest request){
-        categoryService.deleteCategory(did);
+    @GetMapping(path="/availability", params={"did"})
+    public String deleteType(long did, HttpServletRequest request){
+        availabilityService.deleteType(did);
         String queryString = prepareQueryString(request.getQueryString());
-        return String.format("redirect:categories%s", queryString);//robimy przekierowanie, ale zachowując parametry pageingu
+        return String.format("redirect:availability%s", queryString);//robimy przekierowanie, ale zachowując parametry pageingu
     }
 
     private String prepareQueryString(String queryString) {//np., did=20&page=2&size=20
@@ -86,5 +79,6 @@ public class CategoryController {
         CustomNumberEditor priceEditor = new CustomNumberEditor(Float.class, numberFormat, true);
         binder.registerCustomEditor(Float.class, "minPrice", priceEditor);
         binder.registerCustomEditor(Float.class, "maxPrice", priceEditor);
+
     }
 }

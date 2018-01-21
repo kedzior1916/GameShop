@@ -12,7 +12,19 @@
 
         <footer>
             <hr/>
-            © 2018 Maciej Kędzierski
+            <div sec:authorize="hasRole('ADMIN')">
+                <div class="btn-group btn-group-justified">
+                    <span class="btn btn-primary">Tryb admina:</span>
+                    <a class="btn btn-info" th:href="@{/products}">Produkty</a>
+                    <a class="btn btn-info" th:href="@{/categories}">Kategorie</a>
+                    <a class="btn btn-info" th:href="@{/platforms}">Platformy</a>
+                    <a class="btn btn-info" th:href="@{/availability}">Dostępność</a>
+                    <a class="btn btn-info" th:href="@{/languages}">Języki</a>
+                    <a class="btn btn-info" th:href="@{/orders}">Zamówienia</a>
+                </div>
+            </div>
+
+            <p>© 2018 Maciej Kędzierski</p>
         </footer>
     </div>
 

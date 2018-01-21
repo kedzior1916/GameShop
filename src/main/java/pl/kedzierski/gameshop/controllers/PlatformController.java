@@ -12,8 +12,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import pl.kedzierski.gameshop.controllers.commands.ProductFilter;
 import pl.kedzierski.gameshop.models.Category;
-import pl.kedzierski.gameshop.services.CategoryService;
-import pl.kedzierski.gameshop.services.ProductService;
+import pl.kedzierski.gameshop.models.Platform;
+import pl.kedzierski.gameshop.services.PlatformService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -22,51 +22,50 @@ import java.util.Optional;
 
 @Controller
 @SessionAttributes("searchCommand")
-public class CategoryController {
+public class PlatformController {
 
     @Autowired
-    private CategoryService categoryService;
+    private PlatformService platformService;
 
-    @RequestMapping(value="/categoryForm", method= RequestMethod.GET)
+    @RequestMapping(value="/platformForm", method= RequestMethod.GET)
     public String showForm(Model model, Optional<Long> id){
-        model.addAttribute("category",
+        model.addAttribute("platform",
                 id.isPresent()?
-                        categoryService.getCategory(id.get()):
-                        new Category());
-        return "categoryForm";
+                        platformService.getPlatform(id.get()):
+                        new Platform());
+        return "platformForm";
     }
 
-    @RequestMapping(value="/categoryForm", method= RequestMethod.POST)
-    public String processForm(@Valid @ModelAttribute("category") Category p, BindingResult errors) {
+    @RequestMapping(value="/platformForm", method= RequestMethod.POST)
+    public String processForm(@Valid @ModelAttribute("platform") Platform p, BindingResult errors) {
 
         if(errors.hasErrors()){
-            return "categoryForm";
+            return "platformForm";
         }
 
-        categoryService.saveCategory(p);
+        platformService.savePlatform(p);
 
-        return "redirect:categories";//po udanym dodaniu/edycji przekierowujemy na listę
+        return "redirect:platforms";//po udanym dodaniu/edycji przekierowujemy na listę
     }
 
-
-    @RequestMapping(value="/category", params = "id", method = {RequestMethod.GET})
-    public String showProductinCategoryList(Model model, @Param("id") Long id, Pageable pageable){
-        model.addAttribute("productListPage", categoryService.getAllProductsbyCategory(id, pageable));
+    @RequestMapping(value="/platform", params = "id", method = {RequestMethod.GET})
+    public String showProductinPlatformList(Model model, @Param("id") Long id, Pageable pageable){
+        model.addAttribute("productListPage", platformService.getAllProductsbyPlatform(id, pageable));
         return "productList";
     }
 
-    @RequestMapping(value="/categories", method = {RequestMethod.GET})
+    @RequestMapping(value="/platforms", method = {RequestMethod.GET})
     public String showCategories(Model model, Pageable pageable){
-        model.addAttribute("categoryListPage", categoryService.getAllCategories(pageable));
-        return "categoryList";
+        model.addAttribute("platformListPage", platformService.getAllPlatforms(pageable));
+        return "platformList";
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping(path="/categories", params={"did"})
+    @GetMapping(path="/platforms", params={"did"})
     public String deleteCategory(long did, HttpServletRequest request){
-        categoryService.deleteCategory(did);
+        platformService.deletePlatform(did);
         String queryString = prepareQueryString(request.getQueryString());
-        return String.format("redirect:categories%s", queryString);//robimy przekierowanie, ale zachowując parametry pageingu
+        return String.format("redirect:platforms%s", queryString);//robimy przekierowanie, ale zachowując parametry pageingu
     }
 
     private String prepareQueryString(String queryString) {//np., did=20&page=2&size=20
@@ -86,5 +85,6 @@ public class CategoryController {
         CustomNumberEditor priceEditor = new CustomNumberEditor(Float.class, numberFormat, true);
         binder.registerCustomEditor(Float.class, "minPrice", priceEditor);
         binder.registerCustomEditor(Float.class, "maxPrice", priceEditor);
+
     }
 }

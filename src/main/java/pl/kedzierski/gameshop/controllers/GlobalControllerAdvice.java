@@ -5,7 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import pl.kedzierski.gameshop.exceptions.ProductNotFoundException;
+import pl.kedzierski.gameshop.exceptions.ItemNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler(ProductNotFoundException.class)
+    @ExceptionHandler(ItemNotFoundException.class)
     //@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "No such vehicle")
     public String handleVehocleNotFoundError(Model model, HttpServletRequest req, Exception ex) {
 

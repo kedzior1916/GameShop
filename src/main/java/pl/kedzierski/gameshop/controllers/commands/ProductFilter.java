@@ -3,6 +3,8 @@ package pl.kedzierski.gameshop.controllers.commands;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
+import pl.kedzierski.gameshop.models.Category;
+import pl.kedzierski.gameshop.models.Platform;
 
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
@@ -11,6 +13,8 @@ import java.math.BigDecimal;
 public class ProductFilter {
 
     private String phrase;
+    private Long platform;
+    private Long category;
 
     @PositiveOrZero
     private BigDecimal minPrice;
@@ -20,11 +24,13 @@ public class ProductFilter {
 
 
     public boolean isEmpty(){
-        return StringUtils.isEmpty(phrase) && minPrice == null && minPrice == null;
+        return StringUtils.isEmpty(phrase) && platform == null && category == null && minPrice == null && minPrice == null;
     }
 
     public void clear(){
         this.phrase = "";
+        this.category = null;
+        this.platform = null;
         this.minPrice = null;
         this.maxPrice = null;
     }

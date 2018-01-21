@@ -11,15 +11,43 @@
 
             <form th:method="POST" th:action="@{products}" th:object="${searchCommand}">
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <input th:field="*{phrase}" placeholder="Fraza" class="form-control"
                                th:classappend="${#fields.hasErrors('phrase')}?'is-invalid'"/>
                         <div class="error text-danger" th:if="${#fields.hasErrors('phrase')}">
                             <p th:each="err : ${#fields.errors('phrase')}" th:text="${err}"></p>
                         </div>
                     </div>
+                    <div class="form-group col-md-2">
 
-                    <div class="form-group col-md-3">
+                        <select th:field="*{category}" class="form-control"
+                                th:classappend="${#fields.hasErrors('category')}?'is-invalid'">
+                            <option value="-1">--wybierz kategorię--</option>
+                            <option th:each="category : ${categoryList}"
+                                    th:value="${category.id}"
+                                    th:text=" ${category.name}"
+                            />
+                        </select>
+                        <div class="error text-danger" th:if="${#fields.hasErrors('platform')}">
+                            <p th:each="err : ${#fields.errors('platform')}" th:text="${err}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+
+                        <select th:field="*{platform}" class="form-control"
+                                th:classappend="${#fields.hasErrors('platform')}?'is-invalid'">
+                            <option value="-1">--wybierz platformę--</option>
+                            <option th:each="platform : ${platformList}"
+                                    th:value="${platform.id}"
+                                    th:text=" ${platform.name}"
+                            />
+                        </select>
+                        <div class="error text-danger" th:if="${#fields.hasErrors('platform')}">
+                            <p th:each="err : ${#fields.errors('platform')}" th:text="${err}"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
 
                         <input th:field="*{minPrice}" placeholder="Cena od" class="form-control"
                                th:classappend="${#fields.hasErrors('minPrice')}?'is-invalid'"/>
@@ -28,7 +56,7 @@
                         </div>
 
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
 
                         <input th:field="*{maxPrice}" placeholder="Cena do" class="form-control"
                                th:classappend="${#fields.hasErrors('maxPrice')}?'is-invalid'"/>
@@ -44,7 +72,7 @@
                     <div class="form-group col-md-8"></div>
 
                     <div class="form-group col-md-2">
-                        <a th:if="${searchCommand.isEmpty() eq false or #fields.hasErrors('*')}" th:href="@{vehicleList.html(all)}" class="btn btn-success">
+                        <a th:if="${searchCommand.isEmpty() eq false or #fields.hasErrors('*')}" th:href="@{products(all)}" class="btn btn-success">
                             <span class="glyphicon glyphicon-refresh"></span> Pokaż wszystko
                         </a>
                     </div>
@@ -96,7 +124,7 @@
                         </td>
                         <td>[[${product.category.name}]]</td>
                         <td>[[${#dates.format(product.releaseDate, 'dd-MM-yyyy')}]]</td>
-                        <td>[[${#numbers.formatDecimal(product.price,3,2,'COMMA')}]]</td>
+                        <td>[[${#numbers.formatDecimal(product.price,1,2,'COMMA')}]]</td>
                         <td sec:authorize="hasRole('ROLE_ADMIN')">
                             <a class="btn btn-danger" th:href="@{products(did=${product.id})}">Usuń</a>
                             <a class="btn btn-success" th:href="@{productForm(id=${product.id})}">Edytuj</a>

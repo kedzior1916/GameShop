@@ -9,5 +9,5 @@ import pl.kedzierski.gameshop.models.Product;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    Page<Product> findByNameContaining(String phrase, Pageable pageable);
+    Page<Product> findByName(String phrase, Pageable pageable);
 }

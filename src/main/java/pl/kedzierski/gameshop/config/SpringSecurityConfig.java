@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -24,14 +26,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         String[] permittedForAll = {"/statics/**", "/webjars/**","/", "/products", "/product", "/error", "/register",
                                     "/contact", "/uploads/**", "/images/**"};
 
+        String[] forAdmin = {"/productForm", "/platformForm","/categoryForm","/languageForm","/availabilityForm"};
+
         http
                 .authorizeRequests()
                 .antMatchers(permittedForAll).permitAll()
-                .antMatchers( "/productForm").hasRole("ADMIN")
+                .antMatchers(forAdmin).hasRole("ADMIN")
                 .anyRequest().authenticated();
         http
-                .formLogin().defaultSuccessUrl("/")
+                .formLogin()
                 .loginPage("/login")
+                .successHandler(successHandler())
                 .permitAll();
         http
                 .logout()
@@ -50,5 +55,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         AccessDeniedHandlerImpl impl = new AccessDeniedHandlerImpl();
         impl.setErrorPage("/error403");//url
         return impl;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
+        handler.setAlwaysUseDefaultTargetUrl(true);
+        handler.setDefaultTargetUrl("/");
+        return handler;
     }
 }

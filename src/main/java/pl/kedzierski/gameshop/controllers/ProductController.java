@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@SessionAttributes(names={"platformList", "availabilityTypes", "categoryList", "languageList", "product"})
+@SessionAttributes(names={"product"})
 public class ProductController {
 
     @Autowired
