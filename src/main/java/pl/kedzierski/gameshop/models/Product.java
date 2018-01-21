@@ -5,6 +5,7 @@ import org.hibernate.annotations.Tables;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -37,7 +38,9 @@ public class Product {
     @JoinColumn(name="availabilitytype_id", nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private AvailabilityType availability;
+    @Lob
     private String description;
+    @Lob
     private String requirements;
     @JoinColumn(name="category_id", nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
@@ -47,4 +50,5 @@ public class Product {
     private Platform platform;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Language> languages;
+    private String imageName;
 }

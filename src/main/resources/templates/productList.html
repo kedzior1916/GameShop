@@ -67,10 +67,10 @@
 
 
             <span th:if="${searchCommand.isEmpty()}">
-                Baza zawiera [[${productListPage.totalElements}]] pojazdów
+                Ilość pozycji: [[${productListPage.totalElements}]]
             </span>
                 <span th:unless="${searchCommand.isEmpty()}">
-                Wynik wyszukiwania: [[${productListPage.totalElements}]] pojazdów
+                Wynik wyszukiwania: [[${productListPage.totalElements}]]
             </span>
 
                 <table class="table table-striped">

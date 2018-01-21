@@ -1,23 +1,30 @@
 package pl.kedzierski.gameshop.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.kedzierski.gameshop.models.*;
 import pl.kedzierski.gameshop.services.ProductService;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +35,8 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    ServletContext servletContext;
 
     @RequestMapping(value="/productForm", method= RequestMethod.GET)
     public String showForm(Model model, Optional<Long> id){
@@ -39,9 +48,25 @@ public class ProductController {
     }
 
     @RequestMapping(value="/productForm", method= RequestMethod.POST)
-    //@ResponseStatus(HttpStatus.CREATED)
-    public String processForm(@Valid @ModelAttribute("product") Product p, BindingResult errors){
+    public String processForm(@Valid @ModelAttribute("product") Product p, BindingResult errors,
+                              @RequestParam("file") MultipartFile file) throws IOException {
 
+        if(!file.isEmpty()) {
+
+            String uploadsDir = "/uploads/";
+            String realPathtoUploads = servletContext.getRealPath(uploadsDir);
+
+            if (!new File(realPathtoUploads).exists()) {
+                new File(realPathtoUploads).mkdir();
+            }
+
+            String orgName = file.getOriginalFilename();
+            String filePath = realPathtoUploads + orgName;
+            File dest = new File(filePath);
+            file.transferTo(dest);
+
+            p.setImageName(uploadsDir + file.getOriginalFilename());
+        }
         if(errors.hasErrors()){
             return "productForm";
         }

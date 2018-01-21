@@ -34,10 +34,8 @@
                         th:class="${pageName eq 'loginForm'}? 'active'">
                         <a th:href="@{/login}">Zaloguj się</a>
                     </li>
-                    <li sec:authorize="isAuthenticated()">
-                        <label style="color:yellow; margin-top: 15px;">
+                    <li sec:authorize="isAuthenticated()" style="color:white; margin-top: 15px;">
                             Witaj <span sec:authentication="name"/>!
-                        </label>
                     </li>
                     <li sec:authorize="isAuthenticated()">
                         <a>Koszyk</a>

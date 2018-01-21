@@ -22,7 +22,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         String[] permittedForAll = {"/statics/**", "/webjars/**","/", "/products", "/product", "/error", "/register",
-                                    "/contact"};
+                                    "/contact", "/uploads/**", "/images/**"};
 
         http
                 .authorizeRequests()
