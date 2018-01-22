@@ -1,16 +1,35 @@
 package pl.kedzierski.gameshop.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
-@Data
+@Entity
+@Table(name="orders")
+@Getter @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class Order {
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-    private LocalDate orderDate;
+    @Temporal(TemporalType.DATE)
+    @Column(name="order_date")
+    private Date orderDate;
+    @JoinColumn(name="user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
-    private BigDecimal overallCost;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<OrderItem> items;
+    @Min(0)
+    private BigDecimal total;
 }

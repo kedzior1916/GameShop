@@ -128,14 +128,17 @@ public class RepositoryMockupInitializer implements InitializingBean {
                 Role roleAdmin = roleRepository.save(new Role(Role.Types.ROLE_ADMIN));
 
                 User user = new User("user", true);
+                user.setEmail("example@gmail.com");
                 user.setRoles(new HashSet<>(Arrays.asList(roleUser)));
                 user.setPassword(passwordEncoder.encode("user"));
 
                 User admin = new User("admin", true);
+                user.setEmail("example2@gmail.com");
                 admin.setRoles(new HashSet<>(Arrays.asList(roleAdmin)));
                 admin.setPassword(passwordEncoder.encode("admin"));
 
                 User test = new User("test", true);
+                user.setEmail("example3@gmail.com");
                 test.setRoles(new HashSet<>(Arrays.asList(roleAdmin, roleUser)));
                 test.setPassword(passwordEncoder.encode("test"));
 

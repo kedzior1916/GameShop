@@ -1,4 +1,4 @@
-package pl.kedzierski.gameshop.services;
+package pl.kedzierski.gameshop.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.kedzierski.gameshop.exceptions.ItemNotFoundException;
 import pl.kedzierski.gameshop.models.*;
 import pl.kedzierski.gameshop.repositories.*;
+import pl.kedzierski.gameshop.services.CategoryService;
 
 import java.util.Optional;
 

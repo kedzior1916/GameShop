@@ -4,10 +4,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.kedzierski.gameshop.validators.annotations.UniqueEmail;
 import pl.kedzierski.gameshop.validators.annotations.UniqueUsername;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
@@ -25,6 +27,8 @@ public class User {
     private String password;
     @Transient
     private String passwordConfirm;
+    @UniqueEmail
+    private String email;
     private boolean enabled = false;
 
     @AssertTrue

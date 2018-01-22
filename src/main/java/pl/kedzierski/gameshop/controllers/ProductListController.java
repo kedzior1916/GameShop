@@ -62,7 +62,7 @@ public class ProductListController {
     }
 
     @RequestMapping(value="/products", method = {RequestMethod.GET, RequestMethod.POST})
-    public String showVehicleList(Model model, @Valid @ModelAttribute("searchCommand") ProductFilter search,
+    public String showProductList(Model model, @Valid @ModelAttribute("searchCommand") ProductFilter search,
                                   BindingResult result, Pageable pageable){
         model.addAttribute("productListPage", productService.getAllProducts(search, pageable));
         return "productList";

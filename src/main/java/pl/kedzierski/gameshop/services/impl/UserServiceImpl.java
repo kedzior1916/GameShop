@@ -1,4 +1,4 @@
-package pl.kedzierski.gameshop.services;
+package pl.kedzierski.gameshop.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.kedzierski.gameshop.models.Role;
 import pl.kedzierski.gameshop.repositories.RoleRepository;
 import pl.kedzierski.gameshop.repositories.UserRepository;
+import pl.kedzierski.gameshop.services.UserService;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("userDetailsService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -67,5 +68,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean isUniqueLogin(String username) {
         return userRepository.findByUsername(username) == null;
+    }
+    @Override
+    public boolean isUniqueEmail(String email) {
+        return userRepository.findByEmail(email) == null;
     }
 }

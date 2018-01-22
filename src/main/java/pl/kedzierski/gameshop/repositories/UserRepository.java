@@ -6,4 +6,5 @@ import pl.kedzierski.gameshop.models.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String name);
+    User findByEmail(String name);
 }

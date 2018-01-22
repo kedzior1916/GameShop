@@ -1,4 +1,4 @@
-package pl.kedzierski.gameshop.services;
+package pl.kedzierski.gameshop.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +10,7 @@ import pl.kedzierski.gameshop.models.AvailabilityType;
 import pl.kedzierski.gameshop.models.Category;
 import pl.kedzierski.gameshop.models.Product;
 import pl.kedzierski.gameshop.repositories.AvailabilityTypeRepository;
+import pl.kedzierski.gameshop.services.AvailabilityService;
 
 import java.util.Optional;
 

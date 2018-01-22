@@ -24,9 +24,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         String[] permittedForAll = {"/statics/**", "/webjars/**","/", "/products", "/product", "/error", "/register",
-                                    "/contact", "/uploads/**", "/images/**"};
+                                    "/uploads/**", "/images/**", "/about"};
 
-        String[] forAdmin = {"/productForm", "/platformForm","/categoryForm","/languageForm","/availabilityForm"};
+        String[] forAdmin = {"/productForm", "/platformForm","/categoryForm","/languageForm","/availabilityForm", "/orders"};
 
         http
                 .authorizeRequests()
